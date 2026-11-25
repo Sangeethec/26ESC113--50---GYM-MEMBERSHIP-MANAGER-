@@ -1,0 +1,147 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int getNumber()
+{
+    char input[50], *end;
+    long n;
+
+    while (1)
+    {
+        fgets(input, sizeof(input), stdin);
+        n = strtol(input, &end, 10);
+
+        while (isspace((unsigned char)*end))
+            end++;
+
+        if (end != input && *end == '\0')
+            return (int)n;
+
+        printf("Invalid input! Enter a number: ");
+    }
+}
+
+int main()
+{
+    int sno[50], count = 0;
+    int choice, plan, search, i, found;
+    char name[50][50];
+    char membership[50][15];
+
+    while (1)
+    {
+        printf("\n====================================\n");
+        printf("       GYM MEMBERSHIP MANAGER\n");
+        printf("====================================\n");
+        printf("1. Add New Member\n");
+        printf("2. View All Members\n");
+        printf("3. Search Member by S.No.\n");
+        printf("4. Exit\n");
+        printf("====================================\n");
+        printf("Enter your choice: ");
+
+        choice = getNumber();
+
+        switch (choice)
+        {
+            case 1:
+                if (count == 50)
+                {
+                    printf("Member storage is full!\n");
+                    break;
+                }
+
+                printf("\n========== MEMBERSHIP PLANS ==========\n");
+                printf("1. Monthly\n");
+                printf("2. Quarterly\n");
+                printf("3. Yearly\n");
+
+                printf("Enter your plan choice: ");
+
+                while (1)
+                {
+                    plan = getNumber();
+
+                    if (plan >= 1 && plan <= 3)
+                        break;
+
+                    printf("Invalid plan choice! Please try again: ");
+                }
+
+                if (plan == 1)
+                    strcpy(membership[count], "Monthly");
+                else if (plan == 2)
+                    strcpy(membership[count], "Quarterly");
+                else
+                    strcpy(membership[count], "Yearly");
+
+                printf("Enter member name: ");
+                fgets(name[count], sizeof(name[count]), stdin);
+                name[count][strcspn(name[count], "\n")] = '\0';
+
+                sno[count] = count + 1;
+                count++;
+
+                printf("\nMember registered successfully!\n");
+                break;
+
+            case 2:
+                if (count == 0)
+                {
+                    printf("\nNo members registered yet.\n");
+                    break;
+                }
+
+                printf("\nS.No.   Member Name       Membership Plan\n");
+                printf("--------------------------------------------\n");
+
+                for (i = 0; i < count; i++)
+                {
+                    printf("%-8d%-18s%s\n",
+                           sno[i], name[i], membership[i]);
+                }
+                break;
+
+            case 3:
+                if (count == 0)
+                {
+                    printf("\nNo members registered yet.\n");
+                    break;
+                }
+
+                printf("Enter member S.No.: ");
+                search = getNumber();
+
+                found = 0;
+
+                for (i = 0; i < count; i++)
+                {
+                    if (sno[i] == search)
+                    {
+                        printf("\nSerial Number: %d\n", sno[i]);
+                        printf("Member Name: %s\n", name[i]);
+                        printf("Membership Plan: %s\n",
+                               membership[i]);
+
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found == 0)
+                    printf("Member not found! Invalid S.No.\n");
+
+                break;
+
+            case 4:
+                printf("\nThank you for using Gym Membership Manager!\n");
+                printf("Program exited successfully.\n");
+                return 0;
+
+            default:
+                printf("Invalid choice! Please enter a number between 1 and 4.\n");
+        }
+    }
+}
